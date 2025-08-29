@@ -26,10 +26,15 @@ UPLOAD_DIR = "sampleImages"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 @app.post("/upload/")
 async def save_file(file: UploadFile = File(...)):
+    # Check MIME type
+    if not file.content_type.startswith("image/"):
+        return {"error": "Only image files are allowed."}
+
     file_path = os.path.join(UPLOAD_DIR, file.filename)
 
     # Save the uploaded file
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
+
     result = await basic_example(file_path)
     return result
