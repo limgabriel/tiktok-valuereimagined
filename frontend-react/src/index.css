@@ -1,0 +1,12 @@
+/* index.css */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+  font-family: sans-serif;
+  color: #000000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

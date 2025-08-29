@@ -1,0 +1,129 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+h1 {
+  text-align: center;
+}
+
+.Input {
+  padding: 0.5rem;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.AnalyzeButton {
+  padding: 0.5rem 1rem;
+  background-color: #e60045;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+  max-width: 200px;
+}
+
+.AnalyzeButton:hover:not(:disabled) {
+  background-color: #e60045;
+}
+
+.AnalyzeButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ResultCard {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background-color: #fff;
+  width: 100%;
+  max-width: 500px;   /* expands nicely but keeps readable size */
+  box-sizing: border-box;
+}
+
+.ResultItem {
+  margin: 0.5rem 0;
+  text-align: left; /* aligns labels nicely */
+}
+
+
+.Label {
+  font-weight: bold;
+}
+
+.ResultCard {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background-color: #fff;
+  width: 100%;
+  max-width: 500px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.CompositeScore {
+  margin-bottom: 1.5rem;
+}
+
+.ScoreNumber {
+  font-size: 3rem;      /* big value score */
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.ChildMetrics {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.ChildMetric {
+  flex: 1;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 0.8rem;
+  background-color: #fafafa;
+}
+
+.ChildValue {
+  margin-top: 0.3rem;
+  font-weight: bold;
+}
+
+.InfoButton {
+  margin-left: 6px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+}
+
+.InfoBox {
+  margin-top: 4px;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  font-size: 0.85rem;
+  text-align: left;
+}
