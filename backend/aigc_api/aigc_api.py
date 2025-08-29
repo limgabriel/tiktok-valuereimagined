@@ -2,6 +2,8 @@ import os
 import shutil
 
 from fastapi import FastAPI, Form, UploadFile, File
+from tests.test_comments import video_id
+
 from aigc import basic_example
 from getTiktokApi import getJpgFromTTlink
 import asyncio
@@ -15,11 +17,14 @@ async def analyze_image(tiktok_link: str = Form(...)):
     Requires a TikTok link.
     """
     # Download the thumbnail from the TikTok link
-    file_path = await getJpgFromTTlink(tiktok_link)
+    file_path, video_info = await getJpgFromTTlink(tiktok_link)
     print(file_path)
     # Run Reality Defender analysis
     result = await basic_example(file_path)
+    result |= video_info
+    result["filepath"] = file_path
     return result
+
 
 
 UPLOAD_DIR = "sampleImages"
@@ -37,4 +42,5 @@ async def save_file(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, buffer)
 
     result = await basic_example(file_path)
+    result["filepath"] = file_path
     return result
