@@ -247,24 +247,6 @@ The BrightShare frontend is now **hosted on Railway** and accessible to anyone w
 
 > ⚠️ Backend API calls still rely on your configured environment variables if using a local or custom backend.  
 
-
-## Setup & Installation (Local Installation)
-
-Follow these steps to run BrightShare **locally** if you want to develop, test, or modify the project.
-
-### Prerequisites
-
-* Python 3.10.6
-* Node.js >= 18 (with npm)
-
-### 1. Clone repository
-
-```bash
-git clone https://github.com/limgabriel/tiktok-valuereimagined
-cd tiktok-valuereimagined
-
-
-
 ## Setup & Installation (Local Installation)
 
 ### Prerequisites
@@ -343,11 +325,9 @@ You can use BrightShare in two ways:
 2. **Local Installation (for development or testing):**
    - Follow the steps in **Setup & Installation**
 
-
-
 ## Demo
 
-📺 \[Insert YouTube demo link here]
+📺 [Live Demo](https://youtu.be/6_Y6nS7LfGc)
 
 Highlights:
 
@@ -357,9 +337,14 @@ Highlights:
 
 
 ## Screenshots
+![Landing Page](https://github.com/user-attachments/assets/b5aa3049-13da-425e-b483-d61c6f4e1be0)
+*Figure 1: BrightShare Landing Page*
 
-(Add screenshots of dashboard and reward score breakdown)
+![Example of a Real TikTok Link](https://github.com/user-attachments/assets/89c42677-d2d3-4e58-9f8e-67f2a58da66e)
+*Figure 2: Example of a Real TikTok Video URL Input*
 
+![BrightShare's Analysis Page](https://github.com/user-attachments/assets/68b13bca-9e85-407e-93e8-d56778033be8)
+*Figure 3: BrightShare Analysis & Reward Score Dashboard*
 
 ## License
 
