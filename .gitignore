@@ -19,3 +19,4 @@ venv/
 .DS_Store
 
 backend/tt_thumbnails
+backend/models/twitter-roberta-sentiment
