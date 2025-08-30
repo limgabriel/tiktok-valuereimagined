@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from app.schemas import *
-from app.analysis import *
+from backend.app.schemas import *
+from backend.app.analysis import *
 
 app = FastAPI(title="TikTok Reward Analysis API")
 # Allow your frontend origin
