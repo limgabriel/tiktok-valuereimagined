@@ -49,7 +49,7 @@ export function App() {
 
     if (!/^https?:\/\//i.test(normalizedUrl)) {
         normalizedUrl = 'https://' + normalizedUrl
-        video_url = normalizedUrl
+        videoUrl = normalizedUrl
     }
 
     if (!videoUrl.trim()) return alert('Please enter a TikTok URL')
