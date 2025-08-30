@@ -96,8 +96,8 @@ export function App() {
             <div className="ScoreNumber">{result.reward_score.toFixed(2)}</div>
             {showInfo['composite_score'] && (
             <div className="InfoBox show">
-                Overall value score combining engagement, content quality, AIGC integrity, and mission bonuses.
-              <BlockMath math="\text{Reward} = R_{\text{base}} \times M_{\text{quality}} \times M_{\text{integrity}} \times B_{\text{mission}}" />
+                Overall value score combining engagement, community quality, AIGC integrity, and inclusivity bonuses.
+              <BlockMath math="\text{Reward} = R_{\text{base}} \times M_{\text{quality}} \times M_{\text{integrity}} \times I_{\text{bonus}}" />
 
               <p><strong>Base Reward:</strong></p>
               <BlockMath math="R_{\text{base}} = \text{Ad Revenue from TikTok} + \text{Gifted (Stickers)} + \text{Engagement Value Index (EVI)}" />
@@ -153,14 +153,14 @@ export function App() {
                   {result.content_quality.Mquality.toFixed(2)}
                 </div>
                 <div className="MetricSubValue">
-                  Positivity Score: {(result.content_quality.positivity_rate).toFixed(1)} <br/>
-                  Toxicity Score: {(result.content_quality.toxicity_rate).toFixed(1)} <br/>
+                  Positivity Score: {(result.content_quality.positivity_rate).toFixed(4)} <br/>
+                  Toxicity Score: {(result.content_quality.toxicity_rate).toFixed(4)} <br/>
                 </div>
                 {showInfo['content'] && (
                   <div className="InfoBox show">
                     Analyzes the positivity & toxicity of the video's comment section via NLP sentiment analysis.
                     <p><strong>Community & Content Quality Multiplier:</strong></p>
-                  <BlockMath math="M_{\text{quality}} = 0.5 \times \text{Positivity Rate} + 0.5 \times \text{Toxicity Rate}" />
+                  <BlockMath math="M_{\text{quality}} = 0.5 \times \text{Positivity Rate} + 0.5 \times \text{1- Toxicity Rate}" />
               <p>where Positivity Rate and Toxicity Rate are determined using a pre-trained Twitter RoBERTa model and Google Perspective</p>
                   </div>
                 )}
@@ -176,7 +176,7 @@ export function App() {
                   <button className="InfoButton" onClick={() => toggleInfo('aigc')}>i</button>
                 </span>
                 <div className='MetricValue'>
-                 {result.aigc_integrity.Mintegrity.toFixed(2)}
+                 {result.aigc_integrity.Mintegrity.toFixed(3)}
                 </div>
                 <div className="MetricSubValue">
                   AIGC Probability: {(result.aigc_integrity.probability_aigc*100).toFixed(1)}% <br/>
