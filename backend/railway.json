@@ -3,7 +3,7 @@
   "build": {
     "builder": "NIXPACKS",
     "nixpacksConfig": {
-      "installCommand": "pip install -r /app/requirements.txt && playwright install --with-deps chromium",
+      "installCommand": "pip install -r /app/requirements.txt && PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright playwright install --with-deps chromium",
       "startCommand": "PYTHONPATH=/app uvicorn main:app --host 0.0.0.0 --port $PORT"
     }
   },
