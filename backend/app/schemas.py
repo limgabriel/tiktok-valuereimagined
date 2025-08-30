@@ -1,33 +1,59 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import List, Dict, Optional
+from typing import Optional, Dict, Any
+from pydantic import BaseModel
 
-# Comment Section Analysis Request
-class AnalyzeCommentsRequest(BaseModel):
-    video_id: str
-    comments: List[str] = Field(default_factory=list)
+# ---------------------------
+# Request schema
+# ---------------------------
+class TikTokRequest(BaseModel):
+    video_url: str
 
-# Comment Section Analysis Response
-class AnalyzeCommentsResponse(BaseModel):
-    sentiment: Dict[str, float]
-    toxicity: float
-    engagement_score: float
-    top_terms: List[str]
+# ---------------------------
+# Response schema
+# ---------------------------
+class ThumbnailInfo(BaseModel):
+    local_path: str
+    url: Optional[str] = None
 
-# AIGC Score Request
-class AnalyzeContentRequest(BaseModel):
-    video_id: str
-    transcript: Optional[str] = ""
 
-# AIGC Score Response
-class AnalyzeContentResponse(BaseModel):
-    aigc_likelihood: float
-    perplexity: float
+class EngagementComponents(BaseModel):
+    likes_ratio: float
+    shares_ratio: float
+    comments_ratio: float
+    collect_ratio: float
 
-# Final Value Score Response
-class CreatorValueScoreResponse(BaseModel):
-    video_id: str
-    sentiment: Dict[str, float]
-    toxicity: float
-    aigc_likelihood: float
-    composite_score: float
-    rationale: str
+
+class EngagementIndex(BaseModel):
+    EVI: float
+    components: EngagementComponents
+
+
+class ContentQuality(BaseModel):
+    positivity_rate: float
+    toxicity_rate: float
+    Mquality: float
+
+
+class AIGCIntegrity(BaseModel):
+    probability_aigc: float
+    Mintegrity: float
+    analysis_detail: Dict[str, Any]
+
+
+class MissionBonus(BaseModel):
+    small_creator: bool
+    underrepresented_country: bool
+    Bmission: float
+
+
+class TikTokResponse(BaseModel):
+    video_url: str
+    reward_score: float
+    thumbnail: ThumbnailInfo
+    video_stats: Dict[str, Any]
+    engagement_index: EngagementIndex
+    content_quality: ContentQuality
+    aigc_integrity: AIGCIntegrity
+    mission_bonus: MissionBonus
+    error: Optional[str] = None
