@@ -44,47 +44,54 @@ export function App() {
     setShowInfo((prev) => ({ ...prev, [key]: !prev[key] }))
   }
 
-  const onAnalyze = useCallback(async () => {
-      const trimmedUrl = videoUrl.trim()
+const onAnalyze = useCallback(async () => {
+  const trimmedUrl = videoUrl.trim()
 
-      if (!trimmedUrl) {
-        alert('Please enter a TikTok URL')
-        return
-      }
+  if (!trimmedUrl) {
+    alert('Please enter a TikTok URL')
+    return
+  }
 
-      let normalizedUrl = trimmedUrl
-      if (!/^https?:\/\//i.test(normalizedUrl)) {
-        normalizedUrl = 'https://' + normalizedUrl
-        setVideoUrl(normalizedUrl) // update input field
-      }
-    console.log(normalizedUrl)
+  let normalizedUrl = trimmedUrl
+  if (!/^https?:\/\//i.test(normalizedUrl)) {
+    normalizedUrl = 'https://' + normalizedUrl
+    setVideoUrl(normalizedUrl)
+  }
+  console.log("[DEBUG] Normalized URL:", normalizedUrl)
 
-      setLoading(true)
-      setResult(null)
-      let backendUrl: string
-      try {
-          backendUrl = import.meta.env.VITE_BACKEND_URL
-          if (!backendUrl) throw new Error("VITE_BACKEND_URL not set")
-          console.log("[DEBUG] Backend URL:", backendUrl)
-          } catch (err) {
-              backendUrl = "http://localhost:8000"
+  setLoading(true)
+  setResult(null)
 
-              }
+  let backendUrl: string
+  try {
+    backendUrl = import.meta.env.VITE_BACKEND_URL
+    if (!backendUrl) throw new Error("VITE_BACKEND_URL not set")
+    console.log("[DEBUG] Backend URL:", backendUrl)
+  } catch {
+    backendUrl = "http://localhost:8000"
+    console.log("[DEBUG] Fallback to local backend:", backendUrl)
+  }
 
-        const res = await fetch(`${backendUrl}/analyse_tiktok`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ video_url: normalizedUrl }),
-        })
-        const data = await res.json()
-        setResult(data)
-      } catch (err) {
-        console.error(err)
-        alert(err)
-      } finally {
-        setLoading(false)
-      }
-    }, [videoUrl])
+  try {
+    const res = await fetch(`${backendUrl}/analyse_tiktok`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ video_url: normalizedUrl }),
+    })
+
+    if (!res.ok) {
+      throw new Error(`Backend returned status ${res.status}`)
+    }
+
+    const data = await res.json()
+    setResult(data)
+  } catch (err) {
+    console.error("[DEBUG] Fetch or parsing error:", err)
+    alert(err)
+  } finally {
+    setLoading(false)
+  }
+}, [videoUrl])
 
   return (
     <div className="App">
