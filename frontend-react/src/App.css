@@ -3,10 +3,15 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
+  padding: 2rem 1rem;
+  font-family: Arial, sans-serif;
 }
 
 h1 {
   text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem; /* slightly larger */
+  color: #333;
 }
 
 .Input {
@@ -17,6 +22,7 @@ h1 {
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 1rem;
+  box-sizing: border-box;
 }
 
 .AnalyzeButton {
@@ -29,10 +35,11 @@ h1 {
   cursor: pointer;
   width: 100%;
   max-width: 200px;
+  transition: background-color 0.2s ease;
 }
 
 .AnalyzeButton:hover:not(:disabled) {
-  background-color: #e60045;
+  background-color: #cc0040;
 }
 
 .AnalyzeButton:disabled {
@@ -41,71 +48,77 @@ h1 {
 }
 
 .ResultCard {
-  margin-top: 1.5rem;
-  padding: 1rem;
-  border: 1px solid #eee;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  background-color: #fff;
-  width: 100%;
-  max-width: 500px;   /* expands nicely but keeps readable size */
-  box-sizing: border-box;
-}
-
-.ResultItem {
-  margin: 0.5rem 0;
-  text-align: left; /* aligns labels nicely */
-}
-
-
-.Label {
-  font-weight: bold;
-}
-
-.ResultCard {
-  margin-top: 1.5rem;
+  margin-top: 2rem;
   padding: 1.5rem;
   border: 1px solid #eee;
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   background-color: #fff;
   width: 100%;
-  max-width: 500px;
+  max-width: 1100px;
   box-sizing: border-box;
   text-align: center;
 }
 
 .CompositeScore {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .ScoreNumber {
-  font-size: 3rem;      /* big value score */
+  font-size: 3rem;
   font-weight: bold;
   margin-top: 0.5rem;
+  color: #e60045;
 }
 
-.ChildMetrics {
+.Columns {
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* center columns under thumbnail */
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.Column {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
 }
 
-.ChildMetric {
-  flex: 1;
+.MetricCard {
   border: 1px solid #eee;
   border-radius: 12px;
-  padding: 0.8rem;
+  padding: 1rem;
   background-color: #fafafa;
+  position: relative;
+  text-align: center; /* center labels and values */
 }
 
-.ChildValue {
-  margin-top: 0.3rem;
+.MetricLabel {
+  font-size: 1.1rem; /* bigger subheading */
   font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.MetricValue {
+  margin-top: 0.3rem;
+  font-weight: bold; /* non-bold as requested */
+  font-size: 1.5rem;
+  color: #e60045;
+}
+.MetricSubValue {
+  margin-top: 0.3rem;
+  font-weight: normal; /* non-bold as requested */
+  font-size: 1rem;
+  color: #333;
 }
 
 .InfoButton {
-  margin-left: 6px;
   background: #007bff;
   color: white;
   border: none;
@@ -119,11 +132,18 @@ h1 {
 }
 
 .InfoBox {
-  margin-top: 4px;
+  margin-top: 0.5rem;
   padding: 6px 10px;
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #f9f9f9;
   font-size: 0.85rem;
-  text-align: left;
+  text-align: center;
+  display: none;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.InfoBox.show {
+  display: block;
 }
