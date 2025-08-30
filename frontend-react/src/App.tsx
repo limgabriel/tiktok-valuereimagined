@@ -93,7 +93,7 @@ export function App() {
               Reward Score
             <button className="InfoButton" onClick={() => toggleInfo('composite_score')}>i</button>
             </span>
-            <div className="ScoreNumber">{result.reward_score.toFixed(5)}</div>
+            <div className="ScoreNumber">{result.reward_score.toFixed(2)}</div>
             {showInfo['composite_score'] && (
             <div className="InfoBox show">
                 Overall value score combining engagement, content quality, AIGC integrity, and mission bonuses.

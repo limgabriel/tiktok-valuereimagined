@@ -98,8 +98,8 @@ async def analyse_tiktok_video(tt_link: str) -> Dict[str, Any]:
         print("EVI: ", EVI)
 
         # 3. Rbase
-        ad_revenue = 0.0  # You can fill with actual AdRevenue if available
-        gifted_stickers = 0.0  # Similarly
+        ad_revenue = 0.5  # You can fill with actual AdRevenue if available
+        gifted_stickers = 0.5  # Similarly
         Rbase = ad_revenue + gifted_stickers + EVI
         print("Rbase: ", Rbase)
 
