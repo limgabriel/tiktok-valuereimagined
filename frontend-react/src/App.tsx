@@ -96,8 +96,8 @@ export function App() {
             <div className="ScoreNumber">{result.reward_score.toFixed(2)}</div>
             {showInfo['composite_score'] && (
             <div className="InfoBox show">
-                Overall value score combining engagement, community quality, AIGC integrity, and inclusivity bonuses.
-              <BlockMath math="\text{Reward} = R_{\text{base}} \times M_{\text{quality}} \times M_{\text{integrity}} \times I_{\text{bonus}}" />
+                Overall value score combining engagement, community quality, AIGC integrity, and inclusivity index.
+              <BlockMath math="\text{Reward} = R_{\text{base}} \times M_{\text{quality}} \times M_{\text{integrity}} \times I_{\text{index}}" />
 
               <p><strong>Base Reward:</strong></p>
               <BlockMath math="R_{\text{base}} = \text{Ad Revenue from TikTok} + \text{Gifted (Stickers)} + \text{Engagement Value Index (EVI)}" />

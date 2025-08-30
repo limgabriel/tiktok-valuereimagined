@@ -23,9 +23,9 @@ BrightShare is a transparent reward system designed to fairly distribute revenue
 ## Problem Statement  
 
 TikTok allows creators worldwide to earn revenue through short videos and live streams. While higher-quality content generally earns higher rewards, the current reward mechanisms face several challenges:  
-•	Unfair or inconsistent compensation, leaving some creators under-rewarded.
-•	Vulnerability to manipulation, including fraudulent activity and system gaming.
-•	Incentivization of low-quality or toxic content, reducing ecosystem health.  
+	•	Unfair or inconsistent compensation, leaving some creators under-rewarded.
+	•	Vulnerability to manipulation, including fraudulent activity and system gaming.
+	•	Incentivization of low-quality or toxic content, reducing ecosystem health.  
 
 These issues result in misaligned incentives, lower creator engagement, and reduced trust in the platform. There is therefore a need for a transparent, automated, and fair value-sharing system that accurately reflects content quality and creator contribution while ensuring compliance and ecosystem integrity.  
 
@@ -154,14 +154,12 @@ cd tiktok-valuereimagined
 
 ### 3.	Install dependencies:  
 **Backend**  
-Create Environment by selecting requirements.txt when prompted to install dependencies.  
-
-```
-cd backend
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```  
+Option 1: Using VS Code  
+	1.	Delete your current virtual environment if it exists.
+	2.	Press Ctrl + Shift + P (Windows/Linux) or Cmd + Shift + P (macOS) to open the Command Palette.
+	3.	Type Python: Create Environment and select it.
+	4.	Choose Python 3.10.6 as the interpreter.
+	5.	When prompted, select your requirements.txt file to install dependencies. 
 
 Navigate to root and then install playwright, this enables scraping of TikTok comments.   
 
