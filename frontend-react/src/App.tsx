@@ -45,6 +45,13 @@ export function App() {
   }
 
   const onAnalyze = useCallback(async () => {
+      let normalizedUrl = videoUrl.trim()
+
+    if (!/^https?:\/\//i.test(normalizedUrl)) {
+        normalizedUrl = 'https://' + normalizedUrl
+        video_url = normalizedUrl
+    }
+
     if (!videoUrl.trim()) return alert('Please enter a TikTok URL')
     setLoading(true)
     setResult(null)
