@@ -3,10 +3,18 @@
   "build": {
     "builder": "NIXPACKS",
     "nixpacksPlan": {
-      "providers": ["python"],
+      "providers": ["python@3.10.6"],
       "phases": {
+        "setup": {
+          "cmds": [
+            "nix-shell -p python311Packages.pip --run 'true'"
+          ]
+        },
         "install": {
-          "cmds": ["python -m pip install --upgrade pip", "python -m pip install -r app/requirements.txt"]
+          "cmds": [
+            "python -m pip install --upgrade pip",
+            "python -m pip install -r app/requirements.txt"
+          ]
         }
       }
     }
