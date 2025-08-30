@@ -38,7 +38,7 @@ async def fetch_tiktok_info(video_url: str):
 
     # Save thumbnail locally
     safe_name = re.sub(r"[\\/]", "_", video_url.split("www.tiktok.com/")[1])
-    folder = Path("backend/tt_thumbnails")
+    folder = Path("/tmp/tt_thumbnails")
     folder.mkdir(parents=True, exist_ok=True)
     file_path = folder / f"{safe_name}.jpg"
 
@@ -169,7 +169,7 @@ async def analyse_tiktok_video(tt_link: str) -> Dict[str, Any]:
             "reward_score": 0.0,
             "thumbnail": {"local_path": "", "url": ""},
             "video_stats": {},
-            "engagement_index": {"EVI": 0.0, "components": {}},
+            "engagement_index": {"EVI": 0.0, "components": {"likes_ratio": 0.0, "shares_ratio": 0.0, "comments_ratio": 0.0, "collect_ratio": 0.0}},
             "content_quality": {"positivity_rate": 0.0, "toxicity_rate": 0.0, "Mquality": 0.0},
             "aigc_integrity": {"probability_aigc": 0.0, "Mintegrity": 1.0, "analysis_detail": {}},
             "mission_bonus": {"small_creator": False, "underrepresented_country": False, "Bmission": 1.0},
