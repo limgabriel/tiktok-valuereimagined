@@ -67,7 +67,21 @@ export function App() {
 
   return (
     <div className="App">
-      <h1>What's the Reward for this TikTok?</h1>
+      <h1 style={{
+        fontFamily: 'Arial, sans-serif',
+        color: '#FF0050',
+        textAlign: 'center',
+        lineHeight: 1.3
+      }}>
+        BrightShare<br />
+        <span style={{ fontSize: '0.6em', color: '#555' }}>
+          Fair, Transparent, and Inclusive Rewards for TikTok Creators
+        </span>
+      </h1>
+
+      <h2>
+        What's the Reward for this TikTok?
+      </h2>
 
       <input
         type="text"
@@ -208,7 +222,7 @@ export function App() {
                 {showInfo['mission'] && (
                   <div className="InfoBox show">
                     Extra reward for small creators or creators from underrepresented countries.
-                    <p><strong>Inclusivity Bonus:</strong></p>
+                    <p><strong>Inclusivity Index:</strong></p>
               <BlockMath math="I_{\text{index}} = \bigg( 1 + 0.1 \cdot \mathbf{1}_{\text{Small Creator}} + 0.1 \cdot \mathbf{1}_{\text{Underrepresented Community}} \bigg)" />
                             <BlockMath math="\mathbf{1}_{\text{Small Creator}} =
               \begin{cases}
