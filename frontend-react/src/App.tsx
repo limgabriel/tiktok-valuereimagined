@@ -66,7 +66,7 @@ export function App() {
           const backendUrl = import.meta.env.VITE_BACKEND_URL
           console.log("[DEBUG] Backend URL:", backendUrl)
 
-        const res = await fetch(`${backendUrl}/analyse_tiktok`, {
+        const res = await fetch(`https://${backendUrl}/analyse_tiktok`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ video_url: normalizedUrl }),
