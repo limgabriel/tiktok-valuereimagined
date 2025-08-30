@@ -1,16 +1,15 @@
-import asyncio
 import os
 from pathlib import Path
 import re
-from time import time
+
 from TikTokApi import TikTokApi
 from dotenv import load_dotenv
 from realitydefender import RealityDefender, RealityDefenderError
 import requests
-import numpy as np
-from typing import Optional, Dict, Any
-import math
-from .nlp_sentiment import get_comments_score, fetch_comments
+
+from typing import Dict, Any
+
+from nlp_sentiment import get_comments_score, fetch_comments
 
 
 load_dotenv()
