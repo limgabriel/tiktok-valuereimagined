@@ -45,31 +45,37 @@ export function App() {
   }
 
   const onAnalyze = useCallback(async () => {
-      let normalizedUrl = videoUrl.trim()
+      const trimmedUrl = videoUrl.trim()
 
-    if (!/^https?:\/\//i.test(normalizedUrl)) {
+      if (!trimmedUrl) {
+        alert('Please enter a TikTok URL')
+        return
+      }
+
+      let normalizedUrl = trimmedUrl
+      if (!/^https?:\/\//i.test(normalizedUrl)) {
         normalizedUrl = 'https://' + normalizedUrl
-        setVideoUrl(normalizedUrl)
-    }
+        setVideoUrl(normalizedUrl) // update input field
+      }
 
-    setLoading(true)
-    setResult(null)
+      setLoading(true)
+      setResult(null)
 
-    try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/analyse_tiktok`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ video_url: videoUrl }),
-      })
-      const data = await res.json()
-      setResult(data)
-    } catch (err) {
-      console.error(err)
-      alert(err)
-    } finally {
-      setLoading(false)
-    }
-  }, [videoUrl])
+      try {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/analyse_tiktok`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ video_url: normalizedUrl }),
+        })
+        const data = await res.json()
+        setResult(data)
+      } catch (err) {
+        console.error(err)
+        alert(err)
+      } finally {
+        setLoading(false)
+      }
+    }, [videoUrl])
 
   return (
     <div className="App">
