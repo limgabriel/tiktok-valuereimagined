@@ -1,5 +1,5 @@
 
-# BrightShare 
+# BrightShare — Fair, Transparent, and Inclusive Rewards for TikTok Creators
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10+-blue?logo=python"/>
@@ -22,13 +22,12 @@
 3. [Features](#features)  
 4. [Reward System](#reward-system)  
 5. [Tech Stack](#tech-stack)  
-6. [APIs & Libraries](#apis--libraries)  
-7. [Setup & Installation](#setup--installation)  
+6. [Live Deployment](#live-deployment)
+7. [Setup & Local Installation](#setup--installation)  
 8. [Usage](#usage)  
-9. [Demo](#demo)  
+9.  [Demo](#demo)  
 10. [Screenshots](#screenshots)  
 11. [License](#license)  
-
 
 
 ## Overview  
@@ -59,7 +58,7 @@ BrightShare addresses these by **rewarding quality, authenticity, and inclusivit
 
 
 
-## ✨ Features  
+## Features  
 
 - **Base Value Analysis** → Compute core revenue from TikTok (ads, gifts, EVI)  
 - **Sentiment Analysis** → Assess positivity & toxicity in comments  
@@ -210,28 +209,6 @@ Encourages a **diverse, globally representative creator ecosystem**.
 - Playwright (web scraping)  
 
 
-
-## APIs & Libraries  
-
-**APIs**  
-- TikTokApi  
-- Apify API  
-- Google Perspective API  
-- Hugging Face API  
-- Reality Defender API  
-
-**Frontend Libraries**  
-- React 19, React DOM, Vite  
-- TypeScript  
-- ESLint  
-
-**Backend Libraries**  
-- FastAPI, Pydantic  
-- Playwright, Requests  
-- dotenv  
-
-
-
 ## Project Directory Skeleton  
 
 ```bash
@@ -258,6 +235,34 @@ tiktok-valuereimagined/
 │── .gitignore
 │── README.md
 ````
+## Live Deployment
+
+The BrightShare frontend is now **hosted on Railway** and accessible to anyone without local setup.  
+
+🌐 **Access the live app here:** [BrightShare on Railway](https://front-end-production-af24.up.railway.app/)
+
+- Fully functional **dashboard** and reward computation  
+- Supports **real-time engagement, sentiment, AIGC analysis**, and inclusivity scoring  
+- Ideal for quick demos or testing without local installation  
+
+> ⚠️ Backend API calls still rely on your configured environment variables if using a local or custom backend.  
+
+
+## Setup & Installation (Local Installation)
+
+Follow these steps to run BrightShare **locally** if you want to develop, test, or modify the project.
+
+### Prerequisites
+
+* Python 3.10.6
+* Node.js >= 18 (with npm)
+
+### 1. Clone repository
+
+```bash
+git clone https://github.com/limgabriel/tiktok-valuereimagined
+cd tiktok-valuereimagined
+
 
 
 ## Setup & Installation (Local Installation)
@@ -278,9 +283,13 @@ cd tiktok-valuereimagined
 
 ```bash
 # Create and activate virtual environment
-python -m venv .venv
-source .venv/bin/activate   # (macOS/Linux)
-.venv\Scripts\activate      # (Windows)
+# macOS/Linux
+python3.10.6 -m venv .venv
+source .venv/bin/activate
+
+# Windows
+py -3.10.6 -m venv .venv
+.venv\Scripts\activate      
 
 # Install dependencies
 pip install -r backend/app/requirements.txt
@@ -288,6 +297,13 @@ pip install -r backend/app/requirements.txt
 # Install Playwright for TikTok scraping
 playwright install
 ```
+
+Optionally, if you are running it on VSCode, you could follow the following shortcuts:
+  1. Ctr + Shift + P
+  2. Type Python: Create Environment
+  3. Select Venv
+  4. Choose Python 3.10.6
+  5. Select to install via `requirements.txt`
 
 ### 3. Frontend setup
 
@@ -315,10 +331,17 @@ Open local browser → [http://localhost:5173/](http://localhost:5173/)
 
 ## Usage
 
-1. Paste a TikTok video link
-2. Dashboard fetches engagement + comments
-3. Sentiment & AIGC detection auto-run
-4. Reward score is computed & displayed
+You can use BrightShare in two ways:
+
+1. **Live Deployment (Recommended for demos):**
+   - Open [BrightShare on Railway](https://front-end-production-af24.up.railway.app/)
+   - Paste a TikTok video link
+   - Dashboard fetches engagement + comments
+   - Sentiment & AIGC detection auto-run
+   - Reward score is computed & displayed
+
+2. **Local Installation (for development or testing):**
+   - Follow the steps in **Setup & Installation**
 
 
 
@@ -333,11 +356,9 @@ Highlights:
 * Transparent breakdown per TikTok video
 
 
-
 ## Screenshots
 
 (Add screenshots of dashboard and reward score breakdown)
-
 
 
 ## License
