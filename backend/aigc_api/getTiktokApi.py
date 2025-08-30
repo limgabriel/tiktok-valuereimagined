@@ -22,6 +22,7 @@ async def getJpgFromTTlink(video_url):
     video = api.video(url=video_url)
     video_info = await video.info()  # is HTML request, so avoid using this too much
     duration = video_info["video"]["duration"]
+    print(json.dumps(video_info, indent=4))
     video_info = video_info["statsV2"]
     video_info["duration"] = duration
 
@@ -43,5 +44,5 @@ async def getJpgFromTTlink(video_url):
     return file_path, video_info
 
 if __name__ == "__main__":
-    video_url= "https://www.tiktok.com/@azulacinta/video/7543089876946652436"
+    video_url= "https://www.tiktok.com/@predmet_ai/video/7505454698476866824?q=ai%20video&t=1756464322664"
     asyncio.run(getJpgFromTTlink(video_url=video_url))
