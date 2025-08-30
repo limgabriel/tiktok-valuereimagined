@@ -123,7 +123,7 @@ def perspective_toxicity_score(text: str) -> Optional[float]:
         return None
     
 # Import Huggingface model
-SENTIMENT_MODEL = "backend/models/twitter-roberta-sentiment"
+SENTIMENT_MODEL = "cardiffnlp/twitter-roberta-base-sentiment-latest"
 
 def build_sentiment_pipeline():
     tokenizer = AutoTokenizer.from_pretrained(SENTIMENT_MODEL)
