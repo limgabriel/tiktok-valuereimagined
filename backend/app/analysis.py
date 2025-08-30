@@ -10,17 +10,12 @@ import requests
 import numpy as np
 from typing import Optional, Dict, Any
 import math
+from .nlp_sentiment import get_comments_score, fetch_comments
+
 
 load_dotenv()
 
 # ----- Utility Functions -----
-def wilson_lower_bound(successes, total, z=1.96):
-    if total == 0:
-        return 0
-    phat = successes / total
-    denominator = 1 + z**2/total
-    numerator = phat + z**2/(2*total) - z * math.sqrt((phat*(1-phat) + z**2/(4*total))/total)
-    return numerator / denominator
 
 async def fetch_tiktok_info(video_url: str):
     """Fetch TikTok video metadata & thumbnail."""
@@ -83,9 +78,10 @@ async def run_reality_defender(file_path: Path) -> Dict[str, Any]:
 
 async def analyse_tiktok_video(tt_link: str) -> Dict[str, Any]:
     try:
-        # 1. Fetch video + thumbnail
+        # 1. Fetch video + thumbnail + comments
         file_path, stats = await fetch_tiktok_info(tt_link)
         aigc_result = await run_reality_defender(file_path)
+        tt_comments = fetch_comments(tt_link)
 
         # 2. Engagement Index (EVI)
         views = float(stats.get("playCount", 1))
@@ -108,11 +104,7 @@ async def analyse_tiktok_video(tt_link: str) -> Dict[str, Any]:
         print("Rbase: ", Rbase)
 
         # 4. Mquality (Positivity & Toxicity)
-        pos_count = int(stats.get("diggCount", 0))  # placeholder
-        neg_count = int(stats.get("commentCount", 0))  # placeholder
-        total_count = pos_count + neg_count
-        positivity_rate = wilson_lower_bound(pos_count, total_count)
-        toxicity_rate = wilson_lower_bound(neg_count, total_count)
+        positivity_rate, toxicity_rate = get_comments_score(tt_comments)
         Mquality = 0.5 * positivity_rate + 0.5 * (1 - toxicity_rate)
 
         print("Mquality: ", Mquality)
