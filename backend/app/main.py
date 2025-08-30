@@ -7,7 +7,7 @@ app = FastAPI(title="TikTok Reward Analysis API")
 # Allow your frontend origin
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "https://front-end-production-af24.up.railway.app/"],  # your React app
+    allow_origins=["http://localhost:5173", "https://front-end-production-af24.up.railway.app"],  # your React app
     allow_credentials=True,
     allow_methods=["*"],  # allow POST, OPTIONS, etc.
     allow_headers=["*"],  # allow Content-Type, etc.
