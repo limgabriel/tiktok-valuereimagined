@@ -18,7 +18,10 @@ app.add_middleware(
 # ---------------------------
 @app.post("/analyse_tiktok", response_model=TikTokResponse)
 async def analyse_tiktok_endpoint(request: TikTokRequest):
+    print("DEBUG: incoming request", request.dict())
     result = await analyse_tiktok_video(request.video_url)
+    print("DEBUG: function returned", result)
     if result.get("error"):
+        print("DEBUG: raising 400 with", result["error"])
         raise HTTPException(status_code=400, detail=result["error"])
     return result
