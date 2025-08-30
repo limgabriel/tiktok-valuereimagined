@@ -50,7 +50,7 @@ export function App() {
     setResult(null)
 
     try {
-      const res = await fetch('http://localhost:8000/analyse_tiktok', {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/analyse_tiktok`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ video_url: videoUrl }),
