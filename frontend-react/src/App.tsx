@@ -61,12 +61,17 @@ export function App() {
 
       setLoading(true)
       setResult(null)
-
+      let backendUrl: string
       try {
-          const backendUrl = import.meta.env.VITE_BACKEND_URL
+          backendUrl = import.meta.env.VITE_BACKEND_URL
+          if (!backendUrl) throw new Error("VITE_BACKEND_URL not set")
           console.log("[DEBUG] Backend URL:", backendUrl)
+          } catch (err) {
+              backendUrl = "http://localhost:8000"
 
-        const res = await fetch(`https://${backendUrl}/analyse_tiktok`, {
+              }
+
+        const res = await fetch(`${backendUrl}/analyse_tiktok`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ video_url: normalizedUrl }),
