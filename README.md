@@ -101,7 +101,8 @@ Type Checking: Pydantic
 ## APIs & Libraries  
 	•	APIs:  
 	    •	TikTok API (video & engagement data)  
-	    •	OpenAI / Hugging Face API (sentiment analysis)  
+	    •	OpenAI / Hugging Face API (sentiment analysis for positivity detection)  
+	 	•   Perspective API (sentiment analysis for toxicity detection)
 	    •	ReCaptcha / third-party bot detection  
 	•	Python Libraries:  
         • fastapi - API framework  
