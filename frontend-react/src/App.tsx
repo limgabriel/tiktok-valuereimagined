@@ -45,25 +45,37 @@ export function App() {
   }
 
   const onAnalyze = useCallback(async () => {
-    if (!videoUrl.trim()) return alert('Please enter a TikTok URL')
-    setLoading(true)
-    setResult(null)
+      const trimmedUrl = videoUrl.trim()
 
-    try {
-      const res = await fetch('http://localhost:8000/analyse_tiktok', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ video_url: videoUrl }),
-      })
-      const data = await res.json()
-      setResult(data)
-    } catch (err) {
-      console.error(err)
-      alert(err)
-    } finally {
-      setLoading(false)
-    }
-  }, [videoUrl])
+      if (!trimmedUrl) {
+        alert('Please enter a TikTok URL')
+        return
+      }
+
+      let normalizedUrl = trimmedUrl
+      if (!/^https?:\/\//i.test(normalizedUrl)) {
+        normalizedUrl = 'https://' + normalizedUrl
+        setVideoUrl(normalizedUrl) // update input field
+      }
+
+      setLoading(true)
+      setResult(null)
+
+      try {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/analyse_tiktok`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ video_url: normalizedUrl }),
+        })
+        const data = await res.json()
+        setResult(data)
+      } catch (err) {
+        console.error(err)
+        alert(err)
+      } finally {
+        setLoading(false)
+      }
+    }, [videoUrl])
 
   return (
     <div className="App">

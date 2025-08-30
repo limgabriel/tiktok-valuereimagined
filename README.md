@@ -1,214 +1,366 @@
-# BrightShare
 
-A transparent and fair reward system for content creators.
+# BrightShare — Fair, Transparent, and Inclusive Rewards for TikTok Creators
 
-## Table of Contents
-1. [Project Overview](#project-overview)  
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.10+-blue?logo=python"/>
+  <img src="https://img.shields.io/badge/FastAPI-Backend-green?logo=fastapi"/>
+  <img src="https://img.shields.io/badge/React-19-61dafb?logo=react"/>
+  <img src="https://img.shields.io/badge/TypeScript-Frontend-blue?logo=typescript"/>
+  <img src="https://img.shields.io/badge/Node.js-18+-green?logo=node.js"/>
+  <img src="https://img.shields.io/badge/Vite-Bundler-646cff?logo=vite"/>
+  <img src="https://img.shields.io/badge/Playwright-Scraping-orange?logo=microsoft"/>
+  <img src="https://img.shields.io/badge/HuggingFace-Sentiment-yellow?logo=huggingface"/>
+  <img src="https://img.shields.io/badge/Google-Perspective-4285F4?logo=google"/>
+  <img src="https://img.shields.io/badge/Reality_Defender-AIGC_Detection-red"/>
+</p>
+
+
+
+## Table of Contents  
+1. [Overview](#overview)  
 2. [Problem Statement](#problem-statement)  
 3. [Features](#features)  
-4. [Technology Stack](#technology-stack)  
-5. [APIs & Libraries](#apis--libraries)  
-6. [Setup & Installation](#setup--installation)  
-7. [Demo](#demo)  
-8. [Screenshots](#screenshots)  
-9. [Usage](#usage)  
-10. [License](#license)  
+4. [Reward System](#reward-system)  
+5. [Tech Stack](#tech-stack)  
+6. [Live Deployment](#live-deployment)
+7. [Setup & Local Installation](#setup--installation)  
+8. [Usage](#usage)  
+9.  [Demo](#demo)  
+10. [Screenshots](#screenshots)  
+11. [License](#license)  
 
 
-## Project Overview  
+## Overview  
 
-BrightShare is a transparent reward system designed to fairly distribute revenue to content creators on TikTok. It evaluates content using engagement metrics, sentiment analysis, and AI-generated content detection, then calculates a normalized reward score that reflects quality, authenticity, and inclusivity. By providing creators with clear insights and a dashboard, BrightShare ensures fair compensation, discourages fraud, and promotes high-quality, community-friendly content.  
+BrightShare is a reward distribution system that **fairly allocates revenue to TikTok creators** based on:  
+- Engagement metrics  
+- Sentiment in comment sections  
+- Detection of AI-generated content  
+- Inclusivity factors  
+
+By combining these into a **normalized reward score**, BrightShare:  
+- Ensures fair and transparent payouts  
+- Discourages low-quality or fraudulent content  
+- Promotes inclusivity and ecosystem health
+
+Creators also gain access to a **dashboard** showing reward calculations, engagement breakdowns, and sentiment analysis for full transparency.  
+
 
 
 ## Problem Statement  
 
-TikTok allows creators worldwide to earn revenue through short videos and live streams. While higher-quality content generally earns higher rewards, the current reward mechanisms face several challenges:  
-	•	Unfair or inconsistent compensation, leaving some creators under-rewarded.
-	•	Vulnerability to manipulation, including fraudulent activity and system gaming.
-	•	Incentivization of low-quality or toxic content, reducing ecosystem health.  
+While TikTok monetization exists, current mechanisms suffer from:  
+- **Inconsistent/opaque rewards** → many creators underpaid  
+- **System gaming & fraud** → inflated metrics, AIGC spam  
+- **Toxic/low-quality content incentives** → hurts community trust  
 
-These issues result in misaligned incentives, lower creator engagement, and reduced trust in the platform. There is therefore a need for a transparent, automated, and fair value-sharing system that accurately reflects content quality and creator contribution while ensuring compliance and ecosystem integrity.  
-
-
-## Features
-	•	Base Value Analysis: Computes base revenue from TikTok sources.
-	•	Sentiment Analysis: Evaluates comment sections for positive and toxic sentiment.
-	•	AIGC Analysis: Identifies AI generated content automatically.
-	•	Underrepresentation Analysis: Classifies content creator based on popularity and communities.
-	•	Reward Allocation: Distribute revenue proportionally based on normalized scores
-	•	Creator Dashboard: Transparency on scores and engagement stats
+BrightShare addresses these by **rewarding quality, authenticity, and inclusivity**.  
 
 
-## Reward System Calculations
 
-Reward = R_base * M_quality * M_integrity * I_index
+## Features  
 
-### 1. Base Revenue (R_base)
-
-Calculating the current revenue of a video.  
-Includes:
-
-1. Advertising Revenue from Tiktok
-2. Gifted Revenue from consumers
-3. Engagement Value Index (EVI)
-
-```
-R_base = Ad Revenue from TikTok + Gifted (Stickers) + Engagement Value Index (EVI)
-
-EVI = 0.1 * (Likes / Views)
-    + 0.4 * (Shares / Views)
-    + 0.3 * (Comments / Views)
-    + 0.2 * (Reposts / Views)
-```
-
-(Adjust weights as desired)
-
-### 2. Quality Multiplier (M_quality)  
-
-```
-M_quality = 0.5 * Positivity Rate + 0.5 * (1 - Toxicity Rate)
-```  
-•	Both rates use Wilson’s lower bound for confidence adjustment, preventing inflation from small sample sizes.
-(Example: 8/10 vs 80/100 positivity rate.)
-(Adjust weights as desired)
-
-### 3. Integrity Multiplier (M_integrity)  
-```
-M_integrity = 1 - 0.25 * min(1, Probability of AIGC)
-```  
-•	Penalizes suspected AI-generated content (up to 25%).
-(Adjust weights as desired)
-
-### 4. Inclusivity Index (I_index)
-```  
-I_index = (1 + 0.1 * Indicator(Small Creator) + 0.1 * Indicator(Underrepresented Community))
-```  
-•	Small Creator: Followers < threshold.
-•	Underrepresented Community: Creator from TikTok’s expansion communities.
-(Adjust weights as desired)
+- **Base Value Analysis** → Compute core revenue from TikTok (ads, gifts, EVI)  
+- **Sentiment Analysis** → Assess positivity & toxicity in comments  
+- **Comment Section Regulation** → Incentivize creators to maintain healthy, safe comment spaces  
+- **AIGC Detection** → Penalize suspected AI-generated content  
+- **Inclusivity Analysis** → Uplift small/underrepresented creators  
+- **Reward Allocation** → Transparent score-based payouts  
+- **Creator Dashboard** → Track engagement, scores, and payouts  
 
 
-## Technology Stack
+## Reward System  
 
-**Frontend**
-- React 19, TypeScript, Vite
-- ESLint for linting
-- CSS for styling
+The final reward for a TikTok creator is calculated as:
 
-**Backend**
-- FastAPI (Python)
-- Pydantic for validation
-- TikTokApi for TikTok metadata
-- Apify for TikTok comment section
-- Reality Defender for deepfake detection
-- Huggingface model and Google Perspective API for sentiment analysis
+$$
+\text{Reward} = R_{base} \times M_{quality} \times M_{integrity} \times I_{index}
+$$  
 
-**Tooling**
-- Node.js, npm
-- Python 3.10+
-- ChatGPT 5
-- dotenv for env management
+Each component is described below.
 
+---
 
-## APIs & Libraries
+### 1. Base Revenue ($R_{base}$)  
 
-### APIs
-- TikTokApi
-- Reality Defender API
-- Google Perspective API
-- Apify API
-- Hugging Face API
+$$
+R_{base} = \text{Ad Revenue} + \text{Gift Revenue} + \text{EVI}
+$$  
 
-### Frontend Libraries
-- React 19, React DOM
-- Vite
-- TypeScript
-- ESLint & plugins
+where Engagement Value Index (EVI) is:
 
-### Backend Libraries
-- FastAPI
-- Pydantic
-- TikTokApi
-- Reality Defender SDK
-- Playwright
-- Requests
-- dotenv
+$$
+EVI = 0.1 \cdot \frac{Likes}{Views} 
++ 0.4 \cdot \frac{Shares}{Views} 
++ 0.3 \cdot \frac{Comments}{Views} 
++ 0.2 \cdot \frac{Reposts}{Views}
+$$  
 
+- **Purpose:** Capture the core monetization of a video, including ads, gifts, and engagement quality.  
+- **Adjustable weights:** Can be tuned to reflect platform priorities.
 
-## Setup & Installation  
+---
 
-### Prerequisites  
-- Python 3.10.6
-- Node.js (>= 18)
-- npm
+### 2. Community Quality Multiplier ($M_{quality}$)  
 
-### 1. Clone the repository
-```
-git clone https://github.com/limgabriel/tiktok-valuereimagined
-```
+$$
+M_{quality} = 0.5 \cdot (\text{Positivity Rate}) + 0.5 \cdot (1 - \text{Toxicity Rate})
+$$  
 
-### 2.	Navigate to the project folder:  
-```
-cd tiktok-valuereimagined  
-```
+- **Positivity** via Hugging Face RoBERTa Twitter model  
+- **Toxicity** via Google Perspective API  
 
-### 3.	Install dependencies:  
-**Backend**  
-Option 1: Using VS Code  
-	1.	Delete your current virtual environment if it exists.
-	2.	Press Ctrl + Shift + P (Windows/Linux) or Cmd + Shift + P (macOS) to open the Command Palette.
-	3.	Type Python: Create Environment and select it.
-	4.	Choose Python 3.10.6 as the interpreter.
-	5.	When prompted, select your requirements.txt file to install dependencies. 
+#### 🛡️ Comment Section Regulation  
 
-Navigate to root and then install playwright, this enables scraping of TikTok comments.   
+BrightShare enforces creator accountability for their audience:  
 
-```
-playwright install
-``` 
+1. **Weighted Influence on Rewards**  
+   - Positive, low-toxicity comment sections **boost $M_{quality}$**, increasing payouts.  
+   - Toxic comment sections **reduce $M_{quality}$**, even with high engagement.  
+
+2. **Creator Responsibility**  
+   - Encourages creators to **moderate and foster respectful discussions**.  
+
+3. **Dynamic Penalties & Bonuses**  
+   - Extremely toxic comment sections → significant reward reduction.  
+   - Exceptionally positive comment sections → bonus multiplier.  
+
+This ties **community health directly to income**, incentivizing better moderation.
+
+---
+
+### 3. Integrity Multiplier ($M_{integrity}$)  
+
+$$
+M_{integrity} = 1 - 0.25 \cdot \min(1, P(\text{AIGC}))
+$$  
+
+- **Detection Model:** Reality Defender API  
+- **Purpose:** Penalize suspected AI-generated content (up to 25%).  
+
+#### 🤖 AIGC Regulation  
+
+1. **Authenticity Check**  
+   - Videos are scanned for AI generation probability (\(P(\text{AIGC})\)).  
+
+2. **Reward Penalty Mechanism**  
+   - Proportional penalty based on probability:  
+     - \(P(\text{AIGC}) = 0.5 \Rightarrow M_{integrity} = 0.875\)  
+     - \(P(\text{AIGC}) = 1 \Rightarrow M_{integrity} = 0.75\) (max penalty)  
+
+3. **Balancing Creativity & Fairness**  
+   - Minor AI assistance tolerated; full AI-generated content is penalized.  
+
+4. **Transparency**  
+   - Dashboard shows **AIGC risk and resulting multiplier**.  
+
+Ensures **human creators are fairly rewarded** while discouraging content farms.
+
+---
+
+### 4. Inclusivity Index ($I_{index}$)  
+
+$$
+I_{index} = 1 \times (1 + 0.1 \cdot \text{Small Creator}) \times (1 + 0.1 \cdot \text{Underrepresented Community})
+$$  
+
+- **Small Creator:** Follower count < `_SMALL_CREATOR_THRESHOLD` → +10%  
+- **Underrepresented Community:** Creator from `_TARGET_COUNTRIES` → +10%  
+
+#### 🌍 Promoting Inclusivity  
+
+1. **Boosting Small Creators**  
+   - Small creators receive a **10% reward boost**, leveling the playing field.  
+
+2. **Supporting Underrepresented Communities**  
+   - Creators from target countries also receive a **10% bonus**.  
+
+3. **Multiplicative Bonuses**  
+   - If a creator qualifies for both:  
+     $$
+     I_{index} = 1 \times 1.1 \times 1.1 = 1.21 \quad (\text{+21\% boost})
+     $$  
+
+4. **Dashboard Transparency**  
+   - Creators can see exactly how **size and location affect rewards**.  
+
+Encourages a **diverse, globally representative creator ecosystem**.
+
+ 
+
+##  Tech Stack  
 
 **Frontend**  
+- React 19 + TypeScript (Vite)  
+- ESLint  
+- CSS  
+
+**Backend**  
+- FastAPI (Python 3.10+)  
+- Pydantic  
+- TikTokApi + Apify (scraping metadata & comments)  
+- Hugging Face API (sentiment)  
+- Google Perspective API (toxicity)  
+- Reality Defender (deepfake/AIGC detection)  
+
+**Tooling**  
+- Node.js 18+ / npm  
+- dotenv (env management)  
+- Playwright (web scraping)  
+
+
+## Project Directory Skeleton  
+
+```bash
+tiktok-valuereimagined/
+│── backend/
+│   ├── app/
+│   │   ├── analysis.py
+│   │   ├── main.py
+│   │   ├── nlp_sentiment.py
+│   │   ├── requirements.txt
+│   │   ├── schemas.py
+│   ├── download_model.py
+│   └── railway.json
+│
+│── frontend-react/
+│   ├── public/
+│   ├── src/
+│   │   ├── App.css
+│   │   ├── App.tsx
+│   ├── package.json
+│   └── vite.config.ts
+│
+│── .env
+│── .gitignore
+│── README.md
+````
+## Live Deployment
+
+The BrightShare frontend is now **hosted on Railway** and accessible to anyone without local setup.  
+
+🌐 **Access the live app here:** [BrightShare on Railway](https://front-end-production-af24.up.railway.app/)
+
+- Fully functional **dashboard** and reward computation  
+- Supports **real-time engagement, sentiment, AIGC analysis**, and inclusivity scoring  
+- Ideal for quick demos or testing without local installation  
+
+> ⚠️ Backend API calls still rely on your configured environment variables if using a local or custom backend.  
+
+
+## Setup & Installation (Local Installation)
+
+Follow these steps to run BrightShare **locally** if you want to develop, test, or modify the project.
+
+### Prerequisites
+
+* Python 3.10.6
+* Node.js >= 18 (with npm)
+
+### 1. Clone repository
+
+```bash
+git clone https://github.com/limgabriel/tiktok-valuereimagined
+cd tiktok-valuereimagined
+
+
+
+## Setup & Installation (Local Installation)
+
+### Prerequisites
+
+* Python 3.10.6
+* Node.js >= 18 (with npm)
+
+### 1. Clone repository
+
+```bash
+git clone https://github.com/limgabriel/tiktok-valuereimagined
+cd tiktok-valuereimagined
 ```
+
+### 2. Backend setup
+
+```bash
+# Create and activate virtual environment
+# macOS/Linux
+python3.10.6 -m venv .venv
+source .venv/bin/activate
+
+# Windows
+py -3.10.6 -m venv .venv
+.venv\Scripts\activate      
+
+# Install dependencies
+pip install -r backend/app/requirements.txt
+
+# Install Playwright for TikTok scraping
+playwright install
+```
+
+Optionally, if you are running it on VSCode, you could follow the following shortcuts:
+  1. Ctr + Shift + P
+  2. Type Python: Create Environment
+  3. Select Venv
+  4. Choose Python 3.10.6
+  5. Select to install via `requirements.txt`
+
+### 3. Frontend setup
+
+```bash
 cd frontend-react
 npm install
-```  
-
-### 4.	Running the App:  
-**Frontend**  
-Navigate to frontend-react folder  
 ```
-npm run dev
-```  
-Open the app in your browser by clicking on the link displayed.  
 
-**Backend**  
-Navigate to project root  
-```
+### 4. Run services
+
+**Backend**
+
+```bash
 uvicorn backend.app.main:app --reload
-```  
+```
+
+**Frontend**
+
+```bash
+cd frontend-react
+npm run dev
+```
+
+Open local browser → [http://localhost:5173/](http://localhost:5173/)
+
+## Usage
+
+You can use BrightShare in two ways:
+
+1. **Live Deployment (Recommended for demos):**
+   - Open [BrightShare on Railway](https://front-end-production-af24.up.railway.app/)
+   - Paste a TikTok video link
+   - Dashboard fetches engagement + comments
+   - Sentiment & AIGC detection auto-run
+   - Reward score is computed & displayed
+
+2. **Local Installation (for development or testing):**
+   - Follow the steps in **Setup & Installation**
 
 
-## Demo  
-Watch the project demo on YouTube:  
-Demo Video Link:   **insert here**
 
-Video Highlights:  
-	•	Real-time video scoring  
-	•	Reward allocation formulas  
-	•	Transparency in reward calculation  
+## Demo
 
+📺 \[Insert YouTube demo link here]
 
-## Screenshots  
-(Replace with actual screenshots of your project)
+Highlights:
+
+* Real-time scoring
+* Reward allocation formulas explained
+* Transparent breakdown per TikTok video
 
 
-## Usage  
-	1.	Upload TikTok link
-	2.	Dashboard fetches engagement & comments  
-	3.	Sentiment analysis and AIGC run automatically  
-	4.	Reward Score is computed  
+## Screenshots
+
+(Add screenshots of dashboard and reward score breakdown)
 
 
-## License  
+## License
 
-This project is open-source under the MIT License.
+This project is open-source under the **MIT License**.
