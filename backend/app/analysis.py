@@ -8,7 +8,7 @@ from realitydefender import RealityDefender, RealityDefenderError
 import requests
 
 from typing import Dict, Any
-from nlp_sentiment import get_comments_score, fetch_comments
+from backend.app.nlp_sentiment import get_comments_score, fetch_comments
 from playwright.async_api import async_playwright
 
 
