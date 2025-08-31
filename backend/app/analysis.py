@@ -11,7 +11,11 @@ from typing import Dict, Any
 from backend.app.nlp_sentiment import get_comments_score, fetch_comments
 from playwright.async_api import async_playwright
 import asyncio
+import logging
 
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s [%(levelname)s] %(message)s")
 
 load_dotenv()
 
@@ -79,21 +83,45 @@ async def run_reality_defender(file_path: Path) -> Dict[str, Any]:
 
 async def analyse_tiktok_video(tt_link: str) -> Dict[str, Any]:
     try:
-        # 1. Get thumbnail + local path using TikTokApi
-        file_path, stats = await fetch_tiktok_info(tt_link)
+        logger.debug("Starting TikTok analysis for URL: %s", tt_link)
 
-
-        # 2. Run AIGC check on the downloaded thumbnail
-        aigc_result = await run_reality_defender(file_path)
-
-        # 3 Fetch comments asynchronously (wrap blocking fetch_comments)
+        # ---------------------------
+        # 1. Get thumbnail + stats via TikTokApi
+        # ---------------------------
         try:
+            logger.debug("Fetching video info and thumbnail via TikTokApi")
+            file_path, stats = await fetch_tiktok_info(tt_link)
+            logger.debug("Thumbnail saved at: %s", file_path)
+            logger.debug("Fetched stats: %s", stats)
+        except Exception as e:
+            logger.error("Failed to fetch TikTok info: %s", str(e))
+            raise
+
+        # ---------------------------
+        # 2. Run Reality Defender on thumbnail
+        # ---------------------------
+        try:
+            logger.debug("Running Reality Defender on thumbnail")
+            aigc_result = await run_reality_defender(file_path)
+            logger.debug("AIGC result: %s", aigc_result)
+        except Exception as e:
+            logger.error("Reality Defender failed: %s", str(e))
+            raise
+
+        # ---------------------------
+        # 3. Fetch comments asynchronously
+        # ---------------------------
+        try:
+            logger.debug("Fetching comments from Apify")
             tt_comments = await asyncio.to_thread(fetch_comments, tt_link)
+            logger.debug("Fetched %d comments. Sample: %s", len(tt_comments), tt_comments[:5])
         except Exception as e:
             tt_comments = []
-            print(f"[WARN] Failed to fetch comments: {e}")
+            logger.warning("Failed to fetch comments: %s", e)
 
-        # 4 Safe numeric conversions
+        # ---------------------------
+        # 4. Safe numeric conversions
+        # ---------------------------
         def safe_float(x, default=0.0):
             try:
                 return float(x.replace(",", "")) if isinstance(x, str) else float(x)
@@ -105,29 +133,41 @@ async def analyse_tiktok_video(tt_link: str) -> Dict[str, Any]:
         shares = safe_float(stats.get("shareCount", 0))
         comments = safe_float(stats.get("commentCount", 0))
         collect = safe_float(stats.get("collectCount", 0))
+        logger.debug("Numeric stats - views: %s, likes: %s, shares: %s, comments: %s, collect: %s",
+                     views, likes, shares, comments, collect)
 
-        # 4. Engagement Index (EVI)
-        EVI = (
-            0.1 * likes / views
-            + 0.4 * shares / views
-            + 0.3 * comments / views
-            + 0.2 * collect / views
-        )
+        # ---------------------------
+        # 5. Engagement Index (EVI)
+        # ---------------------------
+        EVI = 0.1 * likes / views + 0.4 * shares / views + 0.3 * comments / views + 0.2 * collect / views
+        logger.debug("EVI calculated: %s", EVI)
 
-        # 5. Rbase
+        # ---------------------------
+        # 6. Rbase
+        # ---------------------------
         ad_revenue = 0.5
         gifted_stickers = 0.5
         Rbase = ad_revenue + gifted_stickers + EVI
+        logger.debug("Rbase calculated: %s", Rbase)
 
-        # 6. Mquality
+        # ---------------------------
+        # 7. Mquality
+        # ---------------------------
         positivity_rate, toxicity_rate = get_comments_score(tt_comments)
         Mquality = 0.5 * positivity_rate + 0.5 * (1 - toxicity_rate)
+        logger.debug("Mquality calculated - positivity: %s, toxicity: %s, Mquality: %s",
+                     positivity_rate, toxicity_rate, Mquality)
 
-        # 7. Mintegrity
+        # ---------------------------
+        # 8. Mintegrity
+        # ---------------------------
         prob_aigc = aigc_result.get("score", 0)
         Mintegrity = 1 - 0.25 * min(1, prob_aigc)
+        logger.debug("Mintegrity calculated: %s (prob_aigc: %s)", Mintegrity, prob_aigc)
 
-        # 8. Bmission
+        # ---------------------------
+        # 9. Bmission
+        # ---------------------------
         _TARGET_COUNTRIES = ["BR", "IN", "ZA"]
         _SMALL_CREATOR_THRESHOLD = 10000
         author = stats.get("author", {})
@@ -136,9 +176,14 @@ async def analyse_tiktok_video(tt_link: str) -> Dict[str, Any]:
         Bmission = 1
         Bmission *= 1 + 0.1 * small_creator
         Bmission *= 1 + 0.1 * underrepresented_country
+        logger.debug("Bmission calculated - small_creator: %s, underrepresented_country: %s, Bmission: %s",
+                     small_creator, underrepresented_country, Bmission)
 
-        # 9. Reward
+        # ---------------------------
+        # 10. Reward
+        # ---------------------------
         reward = Rbase * Mquality * Mintegrity * Bmission
+        logger.debug("Final reward: %s", reward)
 
         return {
             "video_url": tt_link,
@@ -173,6 +218,7 @@ async def analyse_tiktok_video(tt_link: str) -> Dict[str, Any]:
         }
 
     except Exception as e:
+        logger.error("Analysis failed for URL %s: %s", tt_link, e, exc_info=True)
         return {
             "video_url": tt_link,
             "reward_score": 0.0,
