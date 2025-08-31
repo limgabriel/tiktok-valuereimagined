@@ -1,7 +1,6 @@
-# Use official Python slim image
+# Use official Python slim image (Debian bookworm)
 FROM python:3.10-slim
 
-# Set working directory
 WORKDIR /app
 
 # Install system dependencies for Playwright
@@ -26,11 +25,14 @@ RUN pip install --no-cache-dir playwright && \
 # Copy only backend code
 COPY backend/ ./backend/
 
-# Set environment variable for module path (optional but helps imports)
-ENV PYTHONPATH=/app
+# 5) Helpful envs
+ENV PYTHONPATH=/app \
+    # Playwright runs as root in containers; no-sandbox reduces random crashes
+    PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright \
+    UVICORN_HOST=0.0.0.0
 
-# Expose backend port
-EXPOSE 8000
+# Railway provides PORT environment variable
+EXPOSE $PORT
 
-# Start the backend
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# 6) Start API - use Railway's PORT environment variable
+CMD uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}
