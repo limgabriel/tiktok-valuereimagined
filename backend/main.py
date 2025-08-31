@@ -41,7 +41,7 @@ async def analyse_tiktok_endpoint(request: TikTokRequest):
         
         # Call analysis function
         result = await analyse_tiktok_video(request.video_url)
-        logger.debug("Analysis result: %s", result)
+        logger.debug("Error ? %s", result["error"])
         
         # Check for internal errors
         if result.get("error"):

@@ -156,16 +156,24 @@ const onAnalyze = useCallback(async () => {
             </div>
           )}
           </div>
-          {/*           
+                    
           {result.thumbnail?.local_path && (
-            <div style={{ marginBottom: '2rem' }}>
+            <div>
+            <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
               <img
-                src={result.thumbnail.url || result.thumbnail.local_path}
-                alt={result.thumbnail.url}
-                style={{ maxWidth: '300px', width: '100%', borderRadius: '12px' }}
+                src={result.thumbnail.local_path}  // base64 string from backend
+                alt="TikTok Thumbnail"
+                style={{
+                  maxWidth: '300px',
+                  width: '100%',
+                  borderRadius: '12px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                }}
               />
+              <p>Thumbnail of retrieved TikTok</p>
+              </div>
             </div>
-          )} */}
+          )}
     
           {/* Two columns */}
           <div className="Columns">

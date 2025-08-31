@@ -1,3 +1,4 @@
+import base64
 import os
 from pathlib import Path
 import re
@@ -20,6 +21,12 @@ logging.basicConfig(level=logging.DEBUG, format="%(asctime)s [%(levelname)s] %(m
 load_dotenv()
 
 # ----- Utility Functions -----
+def encode_thumbnail(path):
+    if not os.path.exists(path):
+        return None
+    with open(path, "rb") as f:
+        encoded = base64.b64encode(f.read()).decode("utf-8")
+    return f"data:image/jpeg;base64,{encoded}"
 
 async def fetch_tiktok_info(video_url: str):
     """Fetch TikTok video metadata & thumbnail."""
@@ -33,6 +40,7 @@ async def fetch_tiktok_info(video_url: str):
 
     duration = video_info["video"]["duration"]
     stats = video_info.get("statsV2", {}) or video_info.get("stats", {}) 
+    stats['followerCount'] = video_info.get('authorStats', {}).get('followerCount', 0)
     stats["duration"] = duration
     stats['location'] = video_info.get("locationCreated", '')
 
@@ -53,7 +61,6 @@ async def fetch_tiktok_info(video_url: str):
         file_path.write_bytes(img_data)
     except Exception as e:
         raise RuntimeError(f"Failed to download thumbnail: {str(e)}")
-
     return file_path, stats
 
 async def run_reality_defender(file_path: Path) -> Dict[str, Any]:
@@ -168,10 +175,9 @@ async def analyse_tiktok_video(tt_link: str) -> Dict[str, Any]:
         # ---------------------------
         # 9. Bmission
         # ---------------------------
-        _TARGET_COUNTRIES = ["BR", "IN", "ZA"]
+        _TARGET_COUNTRIES = ["BR", "IN", "ZA", "JP"]
         _SMALL_CREATOR_THRESHOLD = 10000
-        author = stats.get("author", {})
-        small_creator = author.get("followerCount", 0) < _SMALL_CREATOR_THRESHOLD
+        small_creator = stats.get("followerCount", _SMALL_CREATOR_THRESHOLD + 1) < _SMALL_CREATOR_THRESHOLD
         underrepresented_country = stats.get("location") in _TARGET_COUNTRIES
         Bmission = 1
         Bmission *= 1 + 0.1 * small_creator
@@ -185,10 +191,15 @@ async def analyse_tiktok_video(tt_link: str) -> Dict[str, Any]:
         reward = Rbase * Mquality * Mintegrity * Bmission
         logger.debug("Final reward: %s", reward)
 
+        try: 
+            thumbnail_base64 = encode_thumbnail(file_path)
+        except:
+            raise RuntimeError(f"Failed to encode thumbnail into base64")
+
         return {
             "video_url": tt_link,
             "reward_score": reward,
-            "thumbnail": {"local_path": str(file_path), "url": stats.get("cover", "")},
+            "thumbnail": {"local_path": str(thumbnail_base64), "url": stats.get("cover", "")},
             "video_stats": stats,
             "engagement_index": {
                 "EVI": EVI,
