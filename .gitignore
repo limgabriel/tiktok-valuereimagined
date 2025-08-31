@@ -19,4 +19,6 @@ venv/
 .DS_Store
 
 backend/tt_thumbnails
-backend/models/twitter-roberta-sentiment
+backend/models/twitter-roberta-sentiment/*
+frontend-lynx/LynxExplorer-arm64.app/LynxExplorer
+frontend-lynx/LynxExplorer-arm64.app/LynxDebugResources.bundle/lynx_core_dev.js
