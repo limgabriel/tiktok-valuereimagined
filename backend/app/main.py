@@ -1,3 +1,4 @@
+import glob
 import subprocess
 from venv import logger
 
@@ -32,14 +33,13 @@ async def analyse_tiktok_endpoint(request: TikTokRequest):
 @app.on_event("startup")
 async def startup_event():
     browser_path = os.environ.get("PLAYWRIGHT_BROWSERS_PATH", "/app/playwright-browsers")
-    chromium_path = os.path.join(browser_path, "chromium-1187")
-    if not os.path.exists(chromium_path):
+    chromium_exe = os.path.join(browser_path, "chromium-*/chrome-linux/chrome")
+
+    if not glob.glob(chromium_exe):
         logger.info(f"Playwright browsers not found at {browser_path}. Installing...")
         try:
-            os.makedirs(browser_path, exist_ok=True)
-            subprocess.run(["chmod", "-R", "777", browser_path], check=True)
             subprocess.run(
-                ["python", "-m", "playwright", "install", "--with-deps"],
+                ["python", "-m", "playwright", "install", "--with-deps", "chromium"],
                 env={**os.environ, "PLAYWRIGHT_BROWSERS_PATH": browser_path},
                 check=True,
             )
