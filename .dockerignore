@@ -5,8 +5,8 @@ __pycache__/
 *.pkl
 *.cache
 
-# Ignore node_modules for frontend
-frontend-react/node_modules/
+# Ignore frontend files for docker
+frontend-react/*
 
 # Ignore logs and temp files
 *.log
