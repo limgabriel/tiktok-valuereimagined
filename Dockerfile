@@ -34,5 +34,5 @@ ENV PYTHONPATH=/app \
 # Railway provides PORT environment variable
 EXPOSE $PORT
 
-# 6) Start API - use Railway's PORT environment variable
-CMD uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}
+# 6) Access using the custom start script to handle types correctly
+CMD ["python", "start.py"]
