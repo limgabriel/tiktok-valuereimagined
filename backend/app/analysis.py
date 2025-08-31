@@ -9,6 +9,8 @@ import requests
 
 from typing import Dict, Any
 from nlp_sentiment import get_comments_score, fetch_comments
+from playwright.async_api import async_playwright
+
 
 
 load_dotenv()
@@ -76,65 +78,87 @@ async def run_reality_defender(file_path: Path) -> Dict[str, Any]:
 
 async def analyse_tiktok_video(tt_link: str) -> Dict[str, Any]:
     try:
-        # 1. Fetch video + thumbnail + comments
-        file_path, stats = await fetch_tiktok_info(tt_link)
-        aigc_result = await run_reality_defender(file_path)
+        async with async_playwright() as p:
+            browser = await p.chromium.launch(
+                headless=True,
+                args=["--no-sandbox", "--disable-setuid-sandbox"]
+            )
+            page = await browser.new_page()
+            await page.goto(tt_link, timeout=60000)
+
+            # Example: scrape video stats from TikTok page (adjust selectors)
+            stats = {
+                "playCount": await page.locator("strong[data-e2e='play-count']").inner_text() if await page.locator("strong[data-e2e='play-count']").count() else "1",
+                "diggCount": await page.locator("strong[data-e2e='like-count']").inner_text() if await page.locator("strong[data-e2e='like-count']").count() else "0",
+                "shareCount": await page.locator("strong[data-e2e='share-count']").inner_text() if await page.locator("strong[data-e2e='share-count']").count() else "0",
+                "commentCount": await page.locator("strong[data-e2e='comment-count']").inner_text() if await page.locator("strong[data-e2e='comment-count']").count() else "0",
+                "collectCount": "0",  # TikTok may not expose directly
+                "cover": await page.locator("img[data-e2e='video-cover']").get_attribute("src") if await page.locator("img[data-e2e='video-cover']").count() else "",
+                "author": {
+                    "followerCount": 0,  # you can fetch from profile later
+                },
+                "location": "",  # if you have a way to detect
+            }
+
+            # convert numeric fields safely
+            def safe_float(x, default=0.0):
+                try:
+                    return float(x.replace(",", "")) if isinstance(x, str) else float(x)
+                except:
+                    return default
+
+            views = safe_float(stats.get("playCount", 1), 1)
+            likes = safe_float(stats.get("diggCount", 0))
+            shares = safe_float(stats.get("shareCount", 0))
+            comments = safe_float(stats.get("commentCount", 0))
+            collect = safe_float(stats.get("collectCount", 0))
+
+            await browser.close()
+
+        # === AIGC + comments ===
+        aigc_result = await run_reality_defender(tt_link)
         tt_comments = fetch_comments(tt_link)
 
         # 2. Engagement Index (EVI)
-        views = float(stats.get("playCount", 1))
-        likes = float(stats.get("diggCount", 0))
-        shares = float(stats.get("shareCount", 0))
-        comments = float(stats.get("commentCount", 0))
-        collect = float(stats.get("collectCount", 0))
         EVI = (
             0.1 * likes / views
             + 0.4 * shares / views
             + 0.3 * comments / views
             + 0.2 * collect / views
         )
-        print("EVI: ", EVI)
 
         # 3. Rbase
-        ad_revenue = 0.5  # You can fill with actual AdRevenue if available
-        gifted_stickers = 0.5  # Similarly
+        ad_revenue = 0.5
+        gifted_stickers = 0.5
         Rbase = ad_revenue + gifted_stickers + EVI
-        print("Rbase: ", Rbase)
 
-        # 4. Mquality (Positivity & Toxicity)
+        # 4. Mquality
         positivity_rate, toxicity_rate = get_comments_score(tt_comments)
         Mquality = 0.5 * positivity_rate + 0.5 * (1 - toxicity_rate)
-
-        print("Mquality: ", Mquality)
 
         # 5. Mintegrity
         prob_aigc = aigc_result.get("score", 0)
         Mintegrity = 1 - 0.25 * min(1, prob_aigc)
 
-        print("Mintegrity: ", Mintegrity)
-
-        _TARGET_COUNTRIES = ["BR", "IN", "ZA"]  # example
+        _TARGET_COUNTRIES = ["BR", "IN", "ZA"]
         _SMALL_CREATOR_THRESHOLD = 10000
 
         # 6. Bmission
         author = stats.get("author", {})
         small_creator = author.get("followerCount", 0) < _SMALL_CREATOR_THRESHOLD
-        underrepresented_country = stats.get('location') in _TARGET_COUNTRIES 
+        underrepresented_country = stats.get("location") in _TARGET_COUNTRIES
         Bmission = 1
         Bmission *= 1 + 0.1 * small_creator
         Bmission *= 1 + 0.1 * underrepresented_country
 
-        print("Bmission: ", Bmission)
-
         # 7. Reward
         reward = Rbase * Mquality * Mintegrity * Bmission
-        print("Reward: ", reward)
 
         # 8. Return full payload
         return {
             "video_url": tt_link,
             "reward_score": reward,
-            "thumbnail": {"local_path": str(file_path), "url": stats.get("cover", "")},
+            "thumbnail": {"local_path": "", "url": stats.get("cover", "")},
             "video_stats": stats,
             "engagement_index": {
                 "EVI": EVI,
