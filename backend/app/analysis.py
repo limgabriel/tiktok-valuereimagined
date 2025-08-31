@@ -78,39 +78,14 @@ async def run_reality_defender(file_path: Path) -> Dict[str, Any]:
 
 async def analyse_tiktok_video(tt_link: str) -> Dict[str, Any]:
     try:
-        # 1. Scrape stats with Playwright
-        async with async_playwright() as p:
-            browser = await p.chromium.launch(
-                headless=True,
-                args=["--no-sandbox", "--disable-setuid-sandbox"]
-            )
-            page = await browser.new_page()
-            await page.goto(tt_link, timeout=60000)
+        # 1. Get thumbnail + local path using TikTokApi
+        file_path, stats = await fetch_tiktok_info(tt_link)
 
-            stats = {
-                "playCount": await page.locator("strong[data-e2e='play-count']").inner_text() if await page.locator("strong[data-e2e='play-count']").count() else "1",
-                "diggCount": await page.locator("strong[data-e2e='like-count']").inner_text() if await page.locator("strong[data-e2e='like-count']").count() else "0",
-                "shareCount": await page.locator("strong[data-e2e='share-count']").inner_text() if await page.locator("strong[data-e2e='share-count']").count() else "0",
-                "commentCount": await page.locator("strong[data-e2e='comment-count']").inner_text() if await page.locator("strong[data-e2e='comment-count']").count() else "0",
-                "collectCount": "0",
-                "cover": await page.locator("img[data-e2e='video-cover']").get_attribute("src") if await page.locator("img[data-e2e='video-cover']").count() else "",
-                "author": {
-                    "followerCount": 0,
-                },
-                "location": "",
-            }
 
-            await browser.close()
-
-        # 2. Get thumbnail + local path using TikTokApi
-        file_path, stats_api = await fetch_tiktok_info(tt_link)
-        # Merge extra info into stats
-        stats.update(stats_api)
-
-        # 3. Run AIGC check on the downloaded thumbnail
+        # 2. Run AIGC check on the downloaded thumbnail
         aigc_result = await run_reality_defender(file_path)
 
-        # 4. Fetch comments + run sentiment
+        # 3. Fetch comments + run sentiment
         tt_comments = fetch_comments(tt_link)
 
         # Safe numeric conversion
@@ -126,7 +101,7 @@ async def analyse_tiktok_video(tt_link: str) -> Dict[str, Any]:
         comments = safe_float(stats.get("commentCount", 0))
         collect = safe_float(stats.get("collectCount", 0))
 
-        # 5. Engagement Index (EVI)
+        # 4. Engagement Index (EVI)
         EVI = (
             0.1 * likes / views
             + 0.4 * shares / views
@@ -134,20 +109,20 @@ async def analyse_tiktok_video(tt_link: str) -> Dict[str, Any]:
             + 0.2 * collect / views
         )
 
-        # 6. Rbase
+        # 5. Rbase
         ad_revenue = 0.5
         gifted_stickers = 0.5
         Rbase = ad_revenue + gifted_stickers + EVI
 
-        # 7. Mquality
+        # 6. Mquality
         positivity_rate, toxicity_rate = get_comments_score(tt_comments)
         Mquality = 0.5 * positivity_rate + 0.5 * (1 - toxicity_rate)
 
-        # 8. Mintegrity
+        # 7. Mintegrity
         prob_aigc = aigc_result.get("score", 0)
         Mintegrity = 1 - 0.25 * min(1, prob_aigc)
 
-        # 9. Bmission
+        # 8. Bmission
         _TARGET_COUNTRIES = ["BR", "IN", "ZA"]
         _SMALL_CREATOR_THRESHOLD = 10000
         author = stats.get("author", {})
@@ -157,7 +132,7 @@ async def analyse_tiktok_video(tt_link: str) -> Dict[str, Any]:
         Bmission *= 1 + 0.1 * small_creator
         Bmission *= 1 + 0.1 * underrepresented_country
 
-        # 10. Reward
+        # 9. Reward
         reward = Rbase * Mquality * Mintegrity * Bmission
 
         return {
