@@ -10,29 +10,24 @@ RUN apt-get update && \
                        libgtk-3-0 libxshmfence1 libgl1 libgles2 && \
     rm -rf /var/lib/apt/lists/*
 
-
-# Install Python dependencies
+# Copy requirements and install Python dependencies
 COPY backend/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy only backend code
+# Copy backend code including start.py
 COPY backend/ ./backend/
 
-# Install Playwright browsers
+# Install Playwright and Chromium
 RUN pip install --no-cache-dir playwright && \
     playwright install --with-deps chromium
 
-# Copy only backend code
-COPY backend/ ./backend/
-
-# 5) Helpful envs
+# Helpful envs
 ENV PYTHONPATH=/app \
-    # Playwright runs as root in containers; no-sandbox reduces random crashes
     PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright \
     UVICORN_HOST=0.0.0.0
 
-# Railway provides PORT environment variable
-EXPOSE $PORT
+# Expose port for local dev
+EXPOSE 8000
 
-# 6) Access using the custom start script to handle types correctly
-CMD ["python", "start.py"]
+# Start backend using the script inside backend/
+CMD ["python", "backend/start.py"]
