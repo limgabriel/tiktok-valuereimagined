@@ -1,0 +1,13 @@
+# Ignore local model downloads
+backend/models/
+__pycache__/
+*.pyc
+*.pkl
+*.cache
+
+# Ignore node_modules for frontend
+frontend-react/node_modules/
+
+# Ignore logs and temp files
+*.log
+*.tmp
