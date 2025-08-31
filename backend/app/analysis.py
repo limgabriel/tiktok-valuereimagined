@@ -10,7 +10,7 @@ import requests
 from typing import Dict, Any
 from backend.app.nlp_sentiment import get_comments_score, fetch_comments
 from playwright.async_api import async_playwright
-
+import asyncio
 
 
 load_dotenv()
@@ -76,6 +76,7 @@ async def run_reality_defender(file_path: Path) -> Dict[str, Any]:
     except Exception as e:
         raise RuntimeError(f"Unexpected RealityDefender error: {str(e)}")
 
+
 async def analyse_tiktok_video(tt_link: str) -> Dict[str, Any]:
     try:
         # 1. Get thumbnail + local path using TikTokApi
@@ -85,10 +86,14 @@ async def analyse_tiktok_video(tt_link: str) -> Dict[str, Any]:
         # 2. Run AIGC check on the downloaded thumbnail
         aigc_result = await run_reality_defender(file_path)
 
-        # 3. Fetch comments + run sentiment
-        tt_comments = fetch_comments(tt_link)
+        # 3 Fetch comments asynchronously (wrap blocking fetch_comments)
+        try:
+            tt_comments = await asyncio.to_thread(fetch_comments, tt_link)
+        except Exception as e:
+            tt_comments = []
+            print(f"[WARN] Failed to fetch comments: {e}")
 
-        # Safe numeric conversion
+        # 4 Safe numeric conversions
         def safe_float(x, default=0.0):
             try:
                 return float(x.replace(",", "")) if isinstance(x, str) else float(x)
