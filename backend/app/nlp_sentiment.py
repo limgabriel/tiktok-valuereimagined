@@ -77,10 +77,14 @@ def fetch_comments(url: str, actor_id: str = APIFY_ACTOR_ID, token: str = APIFY_
 
 SENTIMENT_MODEL = "cardiffnlp/twitter-roberta-base-sentiment-latest"
 
-def build_sentiment_pipeline() -> TextClassificationPipeline:
-    tokenizer = AutoTokenizer.from_pretrained(SENTIMENT_MODEL)
-    model = AutoModelForSequenceClassification.from_pretrained(SENTIMENT_MODEL)
-    return TextClassificationPipeline(model=model, tokenizer=tokenizer, return_all_scores=True)
+# Load tokenizer and model once (Railway-friendly)
+print("[DEBUG] Loading Hugging Face sentiment model...")
+tokenizer = AutoTokenizer.from_pretrained(SENTIMENT_MODEL)
+model = AutoModelForSequenceClassification.from_pretrained(SENTIMENT_MODEL)
+sentiment_pipe = TextClassificationPipeline(
+    model=model, tokenizer=tokenizer, return_all_scores=True
+)
+print("[DEBUG] Model loaded!")
 
 def sentiment_to_pos_score(label_scores: List[Dict[str, float]]) -> float:
     """Map sentiment output to [0,1] positivity score."""
@@ -110,18 +114,19 @@ def perspective_toxicity_score_safe(text: str) -> Optional[float]:
     except Exception:
         return None
 
-def get_comments_score(comments: List[str], max_workers: int = 4):
+def get_comments_score(comments: List[str], max_workers: int = 4, batch_size: int = 32):
     """
     Compute positivity + toxicity scores for a list of comments.
-    Sentiment is batched; toxicity is parallelized with threads.
+    Hugging Face model used for sentiment (batched), toxicity is parallelized.
     """
     agg_scores = {"positivity_scores": [], "toxicity_scores": []}
 
     # --- Batch sentiment scoring ---
-    sentiment_pipe = build_sentiment_pipeline()
-    sentiment_outputs = sentiment_pipe(comments, truncation=True)
-    for out in sentiment_outputs:
-        agg_scores["positivity_scores"].append(sentiment_to_pos_score(out))
+    for i in tqdm(range(0, len(comments), batch_size), desc="Analyzing positivity (HF)"):
+        batch = comments[i:i+batch_size]
+        sentiment_outputs = sentiment_pipe(batch, truncation=True)
+        for out in sentiment_outputs:
+            agg_scores["positivity_scores"].append(sentiment_to_pos_score(out))
 
     # --- Parallelized Perspective API ---
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
