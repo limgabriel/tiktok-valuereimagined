@@ -127,6 +127,16 @@ const onAnalyze = useCallback(async () => {
         {loading ? 'Analyzing…' : 'Analyze'}
       </button>
 
+      {loading && (
+        <div className="LoaderContainer">
+          <div className="Spinner"></div>
+          <p>
+            Analysis may take up to <strong>12 minutes</strong> due to network inefficiencies in Railway.<br />
+            Please wait patiently…
+          </p>
+        </div>
+      )}
+
       {result && (
         <div className="ResultCard">
           {/* Value Score */}
