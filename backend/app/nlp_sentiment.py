@@ -148,7 +148,7 @@ def get_comments_score(comments: List[str]):
         if tox is not None:
             agg_scores['toxicity_scores'].append(tox)
 
-    avg_positivity = statistics.mean(agg_scores['positivity_scores'])
+    avg_positivity = statistics.mean(agg_scores['positivity_scores']) if agg_scores['toxicity_scores'] else 0.0
     avg_toxicity = statistics.mean(agg_scores['toxicity_scores']) if agg_scores['toxicity_scores'] else 0.0
 
     return avg_positivity, avg_toxicity
