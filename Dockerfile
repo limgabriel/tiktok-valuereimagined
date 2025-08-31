@@ -33,10 +33,10 @@ COPY backend/ ./backend/
 ENV PYTHONPATH=/app \
     # Playwright runs as root in containers; no-sandbox reduces random crashes
     PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright \
-    UVICORN_HOST=0.0.0.0 \
-    UVICORN_PORT=8000
+    UVICORN_HOST=0.0.0.0
 
-EXPOSE 8000
+# Railway provides PORT environment variable
+EXPOSE $PORT
 
-# 6) Start API
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# 6) Start API - use Railway's PORT environment variable
+CMD uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}
