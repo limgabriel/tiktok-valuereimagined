@@ -23,7 +23,7 @@
 4. [Reward System](#reward-system)  
 5. [Tech Stack](#tech-stack)  
 6. [Live Deployment](#live-deployment)
-7. [Setup & Local Installation](#setup--installation)  
+7. [Setup & Local Installation](#setup-installation)  
 8. [Usage](#usage)  
 9.  [Demo](#demo)  
 10. [Screenshots](#screenshots)  
@@ -90,10 +90,7 @@ $$
 where Engagement Value Index (EVI) is:
 
 $$
-EVI = 0.1 \cdot \frac{Likes}{Views} 
-+ 0.4 \cdot \frac{Shares}{Views} 
-+ 0.3 \cdot \frac{Comments}{Views} 
-+ 0.2 \cdot \frac{Reposts}{Views}
+EVI = 0.1 \cdot \frac{Likes}{Views} + 0.4 \cdot \frac{Shares}{Views} + 0.3 \cdot \frac{Comments}{Views} + 0.2 \cdot \frac{Reposts}{Views}
 $$  
 
 - **Purpose:** Capture the core monetization of a video, including ads, gifts, and engagement quality.  
@@ -145,8 +142,8 @@ $$
 
 2. **Reward Penalty Mechanism**  
    - Proportional penalty based on probability:  
-     - \(P(\text{AIGC}) = 0.5 \Rightarrow M_{integrity} = 0.875\)  
-     - \(P(\text{AIGC}) = 1 \Rightarrow M_{integrity} = 0.75\) (max penalty)  
+     - $$\(P(\text{AIGC}) = 0.5 \Rightarrow M_{integrity} = 0.875\)$$ 
+     - $$\(P(\text{AIGC}) = 1 \Rightarrow M_{integrity} = 0.75\) (max penalty)$$ 
 
 3. **Balancing Creativity & Fairness**  
    - Minor AI assistance tolerated; full AI-generated content is penalized.  
@@ -177,16 +174,13 @@ $$
 
 3. **Multiplicative Bonuses**  
    - If a creator qualifies for both:  
-     $$
-     I_{index} = 1 \times 1.1 \times 1.1 = 1.21 \quad (\text{+21\% boost})
-     $$  
+     $$I_{index} = 1 \times 1.1 \times 1.1 = 1.21 \quad (\text{+21\% boost})$$  
 
 4. **Dashboard Transparency**  
    - Creators can see exactly how **size and location affect rewards**.  
 
 Encourages a **diverse, globally representative creator ecosystem**.
 
- 
 
 ##  Tech Stack  
 
@@ -201,12 +195,14 @@ Encourages a **diverse, globally representative creator ecosystem**.
 - TikTokApi + Apify (scraping metadata & comments)  
 - Hugging Face API (sentiment)  
 - Google Perspective API (toxicity)  
-- Reality Defender (deepfake/AIGC detection)  
+- Reality Defender (deepfake/AIGC detection)
+- Docker for containerisation
 
 **Tooling**  
 - Node.js 18+ / npm  
 - dotenv (env management)  
-- Playwright (web scraping)  
+- Playwright (web scraping)
+- Railway for automated live deployment
 
 
 ## Project Directory Skeleton  
@@ -231,8 +227,10 @@ tiktok-valuereimagined/
 │   ├── package.json
 │   └── vite.config.ts
 │
-│── .env
+│── .env            # not provided please request from us if necessary
 │── .gitignore
+│── Dockerfile
+│── railway.json
 │── README.md
 ````
 ## Live Deployment
@@ -249,8 +247,11 @@ The BrightShare frontend is now **hosted on Railway** and accessible to anyone w
 
 ## Setup & Installation (Local Installation)
 
+The API keys are not provided for security reasons so please contact us if you want to test this system out locally. If not, it is reccomended to access our project via the live deployment site at [BrightShare on Railway](https://front-end-production-af24.up.railway.app/).
+
 ### Prerequisites
 
+* Docker Desktop
 * Python 3.10.6
 * Node.js >= 18 (with npm)
 
@@ -262,30 +263,34 @@ cd tiktok-valuereimagined
 ```
 
 ### 2. Backend setup
+1. Docker Setup (reccomended)
+  ```bash
+  docker build -t tiktok-backend .
+  ```
 
-```bash
-# Create and activate virtual environment
-# macOS/Linux
-python3.10.6 -m venv .venv
-source .venv/bin/activate
-
-# Windows
-py -3.10.6 -m venv .venv
-.venv\Scripts\activate      
-
-# Install dependencies
-pip install -r backend/app/requirements.txt
-
-# Install Playwright for TikTok scraping
-playwright install
-```
-
-Optionally, if you are running it on VSCode, you could follow the following shortcuts:
-  1. Ctr + Shift + P
-  2. Type Python: Create Environment
-  3. Select Venv
-  4. Choose Python 3.10.6
-  5. Select to install via `requirements.txt`
+2. Using Python Virtual Environment
+  ```bash
+  # Create and activate virtual environment
+  # macOS/Linux
+  python3.10.6 -m venv .venv
+  source .venv/bin/activate
+  
+  # Windows
+  py -3.10.6 -m venv .venv
+  .venv\Scripts\activate      
+  
+  # Install dependencies
+  pip install -r backend/app/requirements.txt
+  
+  # Install Playwright for TikTok scraping
+  playwright install
+  ```
+  Optionally, if you are running it on VSCode, you could follow the following shortcuts:
+    1. Ctr + Shift + P
+    2. Type Python: Create Environment
+    3. Select Venv
+    4. Choose Python 3.10.6
+    5. Select to install via `requirements.txt`
 
 ### 3. Frontend setup
 
@@ -297,10 +302,14 @@ npm install
 ### 4. Run services
 
 **Backend**
-
-```bash
-uvicorn backend.app.main:app --reload
-```
+1.  Docker
+ ```bash
+    docker run -p 8000:8000 --env-file .env tiktok-backend
+  ```
+2. Python Virtual Environment
+  ```bash
+  python backend/start.py
+  ```
 
 **Frontend**
 
